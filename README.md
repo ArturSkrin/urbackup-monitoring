@@ -3,7 +3,7 @@
 - **Prometheus** for metrics collection
 - **Grafana** for dashboards
 - **urbackup-exporter** for exposing UrBackup stats
-- (Optional) **node_exporter** for system metrics (Free space on server is essential to monitor as a key metric)
+- **node_exporter** for system metrics (Free space on server is essential to monitor as a key metric)
 
 ## Setup Firewall
 ### By default all services (Grafana, Prometheus, exporters) are publicly exposed if deployed on a VPS with a public IP.
