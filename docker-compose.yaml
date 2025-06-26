@@ -1,0 +1,82 @@
+version: '2.1'
+services:
+  urbackup-server:
+    image: uroni/urbackup-server:latest
+    container_name: urbackup-server
+    user: "root"
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+    ports:
+      - "55414:55414"
+      - "55415:55415"
+      - "55413:55413"
+      - "35623:35623/udp"
+    volumes:
+      - urbackupdata:/var/urbackup
+      - /media/BACKUP/containeredurbackup:/backups
+
+  urbackup-exporter:
+    image: ghcr.io/ngosang/urbackup-exporter
+    container_name: urbackup-exporter
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Madrid
+      - URBACKUP_SERVER_URL=http://urbackup-server:55414/x
+      - URBACKUP_SERVER_USERNAME=${URBACKUP_SERVER_USERNAME}
+      - URBACKUP_SERVER_PASSWORD=${URBACKUP_SERVER_PASSWORD}
+      - EXPORT_CLIENT_BACKUPS=true
+    ports:
+      - "9554:9554"
+    restart: unless-stopped
+    depends_on:
+      - urbackup-server
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheusdata:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafanadata:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+
+volumes:
+  grafanadata:
+    name: grafanadata
+  prometheusdata:
+    name: prometheusdata
+  urbackupdata:
+    name: urbackupdata
