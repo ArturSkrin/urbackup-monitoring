@@ -9,11 +9,11 @@
 ### By default all services (Grafana, Prometheus, exporters) are publicly exposed if deployed on a VPS with a public IP.
 
 ```bash
-sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 55414 -j DROP
-sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 9554 -j DROP
-sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 9100 -j DROP
-sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 9090 -j DROP
-sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 3000 -j DROP
+sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 55414 -j DROP
+sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9554 -j DROP
+sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9100 -j DROP
+sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9090 -j DROP
+sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 3000 -j DROP
 ```
 
 ## Configuration
