@@ -38,6 +38,8 @@ services:
     container_name: prometheus
     ports:
       - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
       - prometheusdata:/prometheus

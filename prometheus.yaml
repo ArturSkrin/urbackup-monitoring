@@ -7,4 +7,4 @@ scrape_configs:
       - targets: ['urbackup-exporter:9554']
   - job_name: 'node'
     static_configs:
-      - targets: ['81.19.137.246:9100']
+      - targets: ['host.docker.internal:9100']
