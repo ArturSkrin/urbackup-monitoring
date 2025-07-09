@@ -9,11 +9,15 @@
 ### By default all services (Grafana, Prometheus, exporters) are publicly exposed if deployed on a VPS with a public IP.
 
 ```bash
-sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 55414 -j DROP
-sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9554 -j DROP
-sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9100 -j DROP
-sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 9090 -j DROP
-sudo iptables -I DOCKER-USER ! -s <your_ip> -p tcp --dport 3000 -j DROP
+sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 55414 -j DROP
+sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 9554 -j DROP
+sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 9090 -j DROP
+sudo iptables -A DOCKER-USER ! -s <your_ip> -p tcp --dport 3000 -j DROP
+```
+
+## We need to Allow Prometheus connect to node_exporter which is working in "host" network mode
+```bash
+sudo itpables -A INPUT -p tcp --dport 9100 -s 172.18.0.0/16 -j ACCEPT -m comment --comment Allow_docker_containers_to_node_exporter
 ```
 
 ## Configuration
